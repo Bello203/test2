@@ -125,12 +125,15 @@ rm_aim_lab_workspace/
 │   ├── sim_core.js                # 仿真核心（simulation.gd 1:1 移植）
 │   └── test_core.mjs              # 核心闭环测试（node test_core.mjs）
 ├── ros2_ws/src/
-│    └── rm_aim_sim_bridge/
-│        ├── msg/                   # 与原版逐字一致
-│        ├── include/.../control_gate.hpp  # 与原版逐字一致
-│        ├── src/web_bridge_node.cpp       # WebSocket 服务器 + ROS 发布/订阅（原 bridge_node 逻辑移植）
-│        └── launch/web_bridge.launch.xml
-│   
+│    ├── rm_aim_sim_bridge/
+│    │    ├── msg/                   # 与原版逐字一致
+│    │    ├── include/.../control_gate.hpp  # 与原版逐字一致
+│    │    ├── src/web_bridge_node.cpp       # WebSocket 服务器 + ROS 发布/订阅（原 bridge_node 逻辑移植）
+│    │    └── launch/web_bridge.launch.xml
+│    └── training
+│         ├── include/aim_node.hpp
+│         ├── aim_node.main
+│         └── aim_node.cpp     
 ├── tools/
 │   ├── check_link.sh              # 一键自检：节点/端口/话题/频率 + 下行指令测试
 │   └── probe_bridge.py            # 探针：打印 session、装甲数、云台角，可选 --sweep
