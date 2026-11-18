@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 400" width="680" height="400" font-family="'PingFang SC','Noto Sans CJK SC',sans-serif">
+<rect width="680" height="400" fill="#F7F7F5"/>
+<g stroke="#00000010" stroke-width="0.5">
+<path d="M80 60H640M80 140H640M80 220H640M80 300H640"/>
+<path d="M160 40V360M240 40V360M320 40V360M400 40V360M480 40V360M560 40V360"/>
+</g>
+<text x="24" y="28" font-size="14" font-weight="500" fill="#2C2C2A">图 1　俯视图：O 系固定不动，G 系跟着 yaw 一起转</text>
+
+<defs>
+<marker id="a-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#444441" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="a-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#A32D2D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="a-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#3B6D11" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+<marker id="a-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#185FA5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<path d="M140 300H618" fill="none" stroke="#444441" stroke-width="1.2" marker-end="url(#a-gray)"/>
+<path d="M140 300V74" fill="none" stroke="#444441" stroke-width="1.2" marker-end="url(#a-gray)"/>
+<text x="510" y="290" font-size="12" fill="#444441">x_O　前</text>
+<text x="148" y="72" font-size="12" fill="#444441">y_O　左（+z 垂直纸面向外）</text>
+<circle cx="140" cy="300" r="3.5" fill="#444441"/>
+<text x="118" y="322" font-size="12" font-weight="500" fill="#2C2C2A">O 原点</text>
+
+<circle cx="460" cy="300" r="26" fill="none" stroke="#185FA5" stroke-width="0.8" stroke-dasharray="3 3"/>
+<g stroke="#185FA5" stroke-width="2.5">
+<path d="M447 274H473"/><path d="M447 326H473"/><path d="M434 287V313"/><path d="M486 287V313"/>
+</g>
+<g stroke="#185FA5" stroke-width="1" fill="none">
+<path d="M460 274V260" marker-end="url(#a-blue)"/>
+<path d="M460 326V340" marker-end="url(#a-blue)"/>
+<path d="M434 300H420" marker-end="url(#a-blue)"/>
+<path d="M486 300H500" marker-end="url(#a-blue)"/>
+</g>
+<text x="460" y="366" font-size="12" fill="#185FA5" text-anchor="middle">靶车 4 块装甲 · 法线朝外（俯视）</text>
+
+<path d="M140 300L322 195" fill="none" stroke="#A32D2D" stroke-width="2" marker-end="url(#a-red)"/>
+<path d="M140 300L235 245" fill="none" stroke="#A32D2D" stroke-width="2" marker-end="url(#a-red)"/>
+<path d="M140 300L95 222" fill="none" stroke="#3B6D11" stroke-width="2" marker-end="url(#a-green)"/>
+<text x="240" y="240" font-size="12" font-weight="500" fill="#A32D2D">x_G（云台前向）</text>
+<text x="60" y="212" font-size="12" font-weight="500" fill="#3B6D11">y_G</text>
+
+<path d="M184 300L183.1 292.5L180.6 285.4L176.6 278.9L171.2 273.3L164.6 268.9L157 266" fill="none" stroke="#888780" stroke-width="0.8"/>
+<text x="190" y="288" font-size="12" fill="#5F5E5A">yaw = +30°（左正）</text>
+
+<text x="330" y="168" font-size="12" fill="#5F5E5A">G 系绕 z 转过的角度 = 云台 yaw</text>
+
+<g font-size="11">
+<path d="M40 356H72" stroke="#444441" stroke-width="1.2"/>
+<text x="78" y="360" fill="#444441">O 系（odom）：不随云台转</text>
+<path d="M40 380H72" stroke="#A32D2D" stroke-width="2"/>
+<text x="78" y="384" fill="#A32D2D">G 系（云台）：随 yaw 转</text>
+</g>
+</svg>

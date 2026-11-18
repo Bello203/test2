@@ -1,0 +1,8 @@
+<launch>
+  <node pkg="rm_aim_sim_bridge" exec="web_bridge_node" name="bridge" output="screen">
+    <param name="port" value="9090"/>
+    <param name="poll_hz" value="100.0"/>
+    <param name="timeout_sec" value="0.25"/>
+    <param name="publish_clock" value="true"/>
+  </node>
+</launch>

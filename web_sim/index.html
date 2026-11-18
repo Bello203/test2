@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoboMaster Aim Lab (Web)</title>
+<style>
+  :root {
+    --bg: #0d1017;
+    --side: #1a2133ee;
+    --side-border: #2c3654;
+    --panel: #1e2538d9;
+    --panel-border: #323d5e;
+    --text: #e8ecf5;
+    --muted: #8b94ab;
+    --accent: #5b7ff5;
+    --accent-soft: #3c4f8f;
+    --ok: #3ddc84;
+    --warn: #ffb340;
+    --err: #ff5c6c;
+    --red-line: #ff7a85;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text);
+    font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; font-size: 13px; }
+  #app { position: fixed; inset: 0; }
+  canvas { display: block; }
+
+  /* ============ 左侧 AIM LAB 侧边栏 ============ */
+  #side { position: fixed; top: 0; left: 0; bottom: 0; width: 232px; z-index: 20;
+    background: var(--side); backdrop-filter: blur(8px); border-right: 1px solid var(--side-border);
+    overflow-y: auto; padding: 14px 14px 20px; }
+  #side h1 { font-size: 26px; font-weight: 800; letter-spacing: 1px; color: #dfe6ff; }
+  #side .sub { color: var(--muted); font-size: 11px; margin: 2px 0 12px; }
+  .sec { color: var(--muted); font-size: 11px; margin: 14px 0 6px; letter-spacing: .5px; }
+  .row { display: flex; align-items: center; justify-content: space-between; margin: 6px 0; gap: 8px; }
+  .row label { color: var(--text); font-size: 12px; flex-shrink: 0; }
+  .row .val { width: 52px; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .row input[type=range] { flex: 1; accent-color: var(--accent); }
+  input.num, select {
+    width: 88px; background: #10141f; color: var(--text); border: 1px solid var(--panel-border);
+    border-radius: 6px; padding: 4px 7px; font-size: 12px; }
+  input.num.wide { width: 100%; }
+  .btn { display: block; width: 100%; text-align: center; background: var(--accent-soft);
+    color: #e6ebff; border: 1px solid #4a5d9e; border-radius: 7px; padding: 7px 10px;
+    cursor: pointer; font-size: 12.5px; margin: 6px 0; }
+  .btn:hover { filter: brightness(1.15); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .toggle { display: flex; align-items: center; justify-content: space-between; margin: 8px 0;
+    cursor: pointer; user-select: none; font-size: 12.5px; }
+  .toggle input { accent-color: var(--accent); width: 30px; height: 16px; appearance: none;
+    background: #10141f; border: 1px solid var(--panel-border); border-radius: 10px; position: relative;
+    cursor: pointer; }
+  .toggle input:checked { background: var(--accent); border-color: var(--accent); }
+  .toggle input::after { content: ""; position: absolute; top: 1px; left: 2px; width: 12px; height: 12px;
+    border-radius: 50%; background: #cfd6ea; transition: left .15s; }
+  .toggle input:checked::after { left: 15px; }
+  .hint { color: var(--muted); font-size: 10.5px; line-height: 1.6; margin: 6px 0 2px; }
+  .subbox { border-left: 2px solid var(--panel-border); margin: 4px 0 6px 4px; padding-left: 10px; }
+  .hidden { display: none !important; }
+  kbd { background: #ffffff18; border-radius: 4px; padding: 0 5px; font-size: 11px; }
+
+  /* ============ 场景区覆盖层 ============ */
+  .overlay { position: fixed; z-index: 10; }
+
+  /* 顶部战绩横幅 */
+  #topband { top: 10px; left: 252px; right: 16px; pointer-events: none; }
+  #statusline { display: flex; gap: 14px; align-items: center; font-size: 12px; color: #c8d0e4;
+    background: var(--panel); border: 1px solid var(--panel-border); border-radius: 8px 8px 0 0;
+    padding: 6px 14px; border-bottom: none; }
+  #statusline .run { color: var(--ok); font-weight: 700; letter-spacing: .5px; }
+  #statmain { background: var(--panel); border: 1px solid var(--panel-border); padding: 8px 14px 4px;
+    font-size: 19px; font-weight: 700; color: #f0f3ff; }
+  #statmain .pct { color: var(--ok); }
+  #statmain .frozen { color: var(--warn); font-size: 14px; font-weight: 500; }
+  #statmain .fly { font-size: 14px; color: #aab4cf; font-weight: 400; margin-left: 12px; }
+  #stathp { background: var(--panel); border: 1px solid var(--panel-border); border-top: none;
+    border-radius: 0 0 8px 8px; padding: 4px 14px 8px; font-size: 12.5px; color: var(--red-line); }
+  #stathp.alive { color: #9fd8ff; }
+
+  /* 云台控制 / GIMBAL 浮动面板 */
+  #gimbalpanel { top: 118px; left: 252px; width: 216px; background: var(--panel);
+    border: 1px solid var(--panel-border); border-radius: 9px; padding: 10px 12px 12px; }
+  #gimbalpanel h3, #camtag { font-size: 11.5px; color: #aab6d8; letter-spacing: .5px; margin-bottom: 8px; }
+  #gimbalpanel h3 b { color: #e7ecfb; font-weight: 600; }
+  .step { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+  .step label { width: 86px; color: #c3cbe2; font-size: 12px; }
+  .step input { width: 74px; }
+  .gbtn { width: 100%; margin: 6px 0 0; }
+  .gbtn.holding { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* 相机画中画 */
+  #pip { right: 16px; top: 64px; width: 320px; border: 1px solid var(--panel-border); border-radius: 9px;
+    overflow: hidden; background: #000c; }
+  #pip .camhead { background: var(--panel); border-bottom: 1px solid var(--panel-border);
+    padding: 5px 12px; font-size: 11.5px; color: #aab6d8; }
+  #pipframe { width: 320px; height: 240px; position: relative; }
+  #pipcross { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); opacity: .9; }
+
+  /* 底部遥测栏 */
+  #telemetry { left: 252px; right: 16px; bottom: 12px; background: var(--panel);
+    border: 1px solid var(--panel-border); border-radius: 9px; padding: 8px 14px; font-size: 12px;
+    color: #c3cbe2; line-height: 1.7; pointer-events: none; }
+  #telemetry b { color: #e7ecfb; font-weight: 600; }
+  #telemetry .dim { color: var(--muted); }
+
+  /* 主视图中心准星 */
+  #cross { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 8;
+    pointer-events: none; opacity: .85; }
+
+  #toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: #000b;
+    color: #fff; padding: 8px 18px; border-radius: 18px; z-index: 30; opacity: 0; transition: opacity .25s;
+    pointer-events: none; font-size: 12px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<!-- ============ 左侧栏 ============ -->
+<div id="side">
+  <h1>AIM LAB</h1>
+  <div class="sub">RoboMaster · 自瞄仿真 · Web/ROS2</div>
+  <button class="btn primary" id="btn-pause">P 暂停</button>
+
+  <div class="sec">01 跑车</div>
+  <div class="row"><label>车型</label>
+    <select id="robot" class="num">
+      <option value="infantry_3">步兵 3</option><option value="infantry_4">步兵 4</option>
+      <option value="infantry_5">步兵 5</option><option value="hero">英雄 1</option>
+      <option value="sentry">哨兵 7</option>
+    </select></div>
+  <div class="row"><label>设置血量 / HP</label><input type="number" id="hp" class="num" value="0" min="0" max="9999" step="10"></div>
+  <div class="row"><label>初始距离 / m</label><input type="number" id="dist" class="num" value="4.0" min="1.5" max="10" step="0.5"></div>
+
+  <div class="sec">装甲位置 / 整组偏移</div>
+  <div class="row"><label>左右偏移 /m · 左正</label><input type="number" id="offy" class="num" value="0.0" min="-2" max="2" step="0.1"></div>
+  <div class="row"><label>上下偏移 /m · 上正</label><input type="number" id="offz" class="num" value="0.0" min="-0.4" max="0.6" step="0.05"></div>
+  <button class="btn" id="btn-zero">装甲位置偏移归零</button>
+  <div class="hint">平移整组装甲与运动起止点。保留当前运动强度。</div>
+
+  <label class="toggle"><span>开启平移</span><input type="checkbox" id="translate"></label>
+  <button class="btn" id="btn-trans-params">▶ 平移参数（展开）</button>
+  <div class="subbox hidden" id="translate-box">
+    <div class="row"><label>速度 /m·s⁻¹</label><input type="number" id="tspeed" class="num" value="1.0" min="0.2" max="4" step="0.1"></div>
+    <div class="row"><label>加速度 /m·s⁻²</label><input type="number" id="taccel" class="num" value="3.0" min="1" max="10" step="0.5"></div>
+    <div class="row"><label>行程 /m</label><input type="number" id="ttravel" class="num" value="1.5" min="0.3" max="2.5" step="0.1"></div>
+    <div class="row"><label>方向 /°</label><input type="number" id="theading" class="num" value="90" min="0" max="360" step="5"></div>
+  </div>
+
+  <label class="toggle"><span>开启自转</span><input type="checkbox" id="rotate"></label>
+  <button class="btn" id="btn-rot-params">▶ 自转参数（展开）</button>
+  <div class="subbox hidden" id="rotate-box">
+    <div class="row"><label>角速度 /rad·s⁻¹</label><input type="number" id="romega" class="num" value="4.0" min="1" max="12" step="0.5"></div>
+    <div class="row"><label>初相 /°</label><input type="number" id="rphase" class="num" value="180" min="0" max="360" step="5"></div>
+  </div>
+
+  <div class="sec">02 发射与响应</div>
+  <div class="row"><label>弹速 /m·s⁻¹</label><input type="number" id="wspeed" class="num" value="23.0" min="5" max="40" step="0.5"></div>
+  <div class="row"><label>单发伤害 / HP</label><input type="number" id="wdamage" class="num" value="20" min="1" max="200" step="1"></div>
+
+  <div class="sec">03 ROS 桥接</div>
+  <div class="row"><label>桥接地址</label><input type="text" id="wsurl" class="num" style="width:118px" value="ws://localhost:9090"></div>
+  <label class="toggle"><span>外部控制（ROS）</span><input type="checkbox" id="extctl"></label>
+  <div class="hint">外部控制开启时，云台与开火由 <b>/aim_sim/command</b> 驱动；界面手动控制自动失效。</div>
+
+  <div class="sec">04 场景</div>
+  <label class="toggle"><span>显示坐标系（X红前 / Y绿左 / Z蓝上）</span><input type="checkbox" id="showcoords"></label>
+  <div class="row" id="frame-toggles" style="display:none;gap:10px">
+    <label style="display:flex;align-items:center;gap:3px;font-size:11px"><input type="checkbox" id="frame-o" checked>O</label>
+    <label style="display:flex;align-items:center;gap:3px;font-size:11px"><input type="checkbox" id="frame-g">G</label>
+    <label style="display:flex;align-items:center;gap:3px;font-size:11px"><input type="checkbox" id="frame-c">C</label>
+    <label style="display:flex;align-items:center;gap:3px;font-size:11px"><input type="checkbox" id="frame-m">M</label>
+  </div>
+  <label class="toggle"><span>显示装甲角点数值</span><input type="checkbox" id="showcorners"></label>
+  <label class="toggle"><span>显示地面距离标记</span><input type="checkbox" id="showmarkers" checked></label>
+  <label class="toggle"><span>显示相机画中画</span><input type="checkbox" id="showpip" checked></label>
+  <button class="btn" id="btn-reset">R 重置 · 恢复血量清空统计</button>
+  <div class="hint"><kbd>P</kbd> 暂停 · <kbd>R</kbd> 重置 · <kbd>V</kbd> 视角 · <kbd>F</kbd> 按住瞄准 · <kbd>Space</kbd> 按住发射</div>
+</div>
+
+<!-- ============ 顶部战绩 ============ -->
+<div class="overlay" id="topband">
+  <div id="statusline">
+    <span class="run" id="st-run">RUNNING</span>
+    <span id="st-time">T 0.00s</span>
+    <span id="st-mode">本地手动控制</span>
+    <span id="st-fps">-- FPS</span>
+    <span id="st-bridge" style="color:var(--err)">桥接未连接</span>
+  </div>
+  <div id="statmain">
+    <span id="stat-hit">有效命中 0/0 0.0%</span>
+    <span class="frozen hidden" id="stat-frozen">（成绩已冻结）</span>
+    <span class="fly" id="stat-fly">飞行中 0</span>
+  </div>
+  <div id="stathp" class="alive">
+    <span id="hp-line">血量 350/350 HP</span> · <span id="dmg-line">累计伤害 0 · 击毁 0</span>
+  </div>
+</div>
+
+<!-- ============ 云台控制面板 ============ -->
+<div class="overlay" id="gimbalpanel">
+  <h3>云台控制 / <b>GIMBAL</b></h3>
+  <div class="step"><label>Yaw / °</label><input type="number" id="man-yaw" class="num" value="0.0" step="0.2"></div>
+  <div class="step"><label>Pitch / ° · 上负</label><input type="number" id="man-pitch" class="num" value="0.0" step="0.2"></div>
+  <button class="btn gbtn" id="btn-aim">按住瞄准 / F</button>
+  <button class="btn gbtn" id="btn-fire">按住发射 / Space</button>
+  <label class="toggle"><span>本机自瞄控制</span><input type="checkbox" id="demo"></label>
+</div>
+
+<!-- ============ 相机画中画 ============ -->
+<div class="overlay" id="pip">
+  <div class="camhead">云台相机 / <b style="color:#e7ecfb">CAMERA</b> 1440×1080 · FOV 45°</div>
+  <div id="pipframe">
+    <svg id="pipcross" width="46" height="46" viewBox="0 0 46 46">
+      <path d="M23 12 v9 M23 25 v9 M12 23 h9 M25 23 h9" stroke="#fff" stroke-width="1.6"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ============ 底部遥测 ============ -->
+<div class="overlay" id="telemetry">
+  <div><b>落地</b> <span id="tl-ground">0</span> · <b>命中/秒</b> <span id="tl-hps">0.00</span> ·
+    <b>命中/抛物</b> <span id="tl-hr">--</span> · <b>首发命中</b> <span id="tl-first">--</span></div>
+  <div>实际 Yaw <b id="tl-yaw">0.00°</b> / Pitch <b id="tl-pitch">0.00°</b> ·
+    指令 <span id="tl-cmd">本地</span> · 拒收 <span id="tl-rej">0</span> <span class="dim" id="tl-status"></span></div>
+  <div class="dim" id="tl-session">会话：-- · 仿真 60 Hz · ROS 桥接协议 rm_aim_sim/2</div>
+</div>
+
+<!-- 主视图中心准星 -->
+<div id="cross">
+  <svg width="44" height="44" viewBox="0 0 44 44">
+    <path d="M22 10 v8 M22 26 v8 M10 22 h8 M26 22 h8" stroke="#fff" stroke-width="1.4" opacity="0.9"/>
+    <circle cx="22" cy="22" r="1.6" fill="#fff" opacity="0.9"/>
+  </svg>
+</div>
+
+<!-- 装甲角点数值 -->
+<div id="corners" style="position:fixed;right:16px;bottom:96px;width:300px;max-height:34vh;overflow-y:auto;background:var(--panel);border:1px solid var(--panel-border);border-radius:9px;z-index:10;padding:8px 12px;font-size:11px;font-variant-numeric:tabular-nums;display:none;">
+  <h3 style="font-size:12px;color:#aab6d8;margin-bottom:4px;">X 红 / Y 绿 / Z 蓝 · 单位 m</h3>
+  <div id="corner-readout" style="color:#8b94ab;margin-bottom:4px;white-space:pre-line;"></div>
+  <table id="corner-table" style="width:100%;border-collapse:collapse;"></table>
+</div>
+
+<div id="toast"></div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+} }
+</script>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

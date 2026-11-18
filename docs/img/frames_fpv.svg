@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" width="680" height="440" font-family="'PingFang SC','Noto Sans CJK SC',sans-serif">
+<rect width="680" height="440" fill="#F7F7F5"/>
+<defs>
+<marker id="x" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#FAC775" stroke-width="1.4"/>
+</marker>
+</defs>
+<text x="24" y="28" font-size="14" font-weight="500" fill="#2C2C2A">图 2　第一人称：C 系光轴 = 屏幕中心，装甲四角落在像素坐标上</text>
+
+<rect x="70" y="56" width="440" height="330" rx="4" fill="#131822" stroke="#444441" stroke-width="0.8"/>
+<rect x="70" y="228" width="440" height="158" fill="#1B2230"/>
+<g stroke="#FFFFFF14" stroke-width="0.6">
+<path d="M70 264H510M70 306H510M70 352H510"/>
+<path d="M150 228V386M250 228V386M370 228V386M470 228V386"/>
+</g>
+<path d="M70 228H510" stroke="#FFFFFF30" stroke-width="0.8"/>
+
+<g stroke="#8FE3C0" stroke-width="1">
+<path d="M290 221H303M317 221H330M310 201V214M310 229V242"/>
+<circle cx="310" cy="221" r="3" fill="none"/>
+</g>
+<text x="310" y="196" font-size="11" fill="#8FE3C0" text-anchor="middle">光轴 z_C（屏幕中心）</text>
+
+<path d="M385 183L427 180L426 228L384 231Z" fill="#E24B4A28" stroke="#E24B4A" stroke-width="1.2"/>
+<g fill="#E24B4A">
+<circle cx="385" cy="183" r="2.2"/><circle cx="427" cy="180" r="2.2"/>
+<circle cx="426" cy="228" r="2.2"/><circle cx="384" cy="231" r="2.2"/>
+</g>
+
+<g stroke="#888780" stroke-width="0.6" stroke-dasharray="3 3" fill="none">
+<path d="M427 180L545 168"/><path d="M385 183L545 196"/><path d="M426 228L545 236"/><path d="M384 231L545 264"/>
+</g>
+<g font-size="11" fill="#2C2C2A">
+<text x="550" y="172">右上</text><text x="550" y="200">左上</text>
+<text x="550" y="240">右下</text><text x="550" y="268">左下</text>
+</g>
+<text x="550" y="292" font-size="11" fill="#5F5E5A">顺序从正面看</text>
+<text x="550" y="308" font-size="11" fill="#5F5E5A">135 × 125 mm</text>
+
+<g stroke="#FAC775" stroke-width="1.4" fill="none">
+<path d="M100 352H168" marker-end="url(#x)"/>
+<path d="M100 352V370"/>
+</g>
+<text x="174" y="356" font-size="11" fill="#FAC775">u（像素列 →）</text>
+<text x="106" y="376" font-size="11" fill="#FAC775">v（像素行 ↓）</text>
+
+<text x="24" y="412" font-size="12" fill="#5F5E5A">C 原点 = G 原点 + 前 0.08 m + 上 0.04 m；垂直 FOV 45°（1440×1080），水平约 57.8°</text>
+<text x="24" y="430" font-size="12" fill="#5F5E5A">px = fy · (rel·right)/depth + W/2　　py = −fy · (rel·up)/depth + H/2　　fy = 540 / tan22.5° ≈ 1303</text>
+</svg>

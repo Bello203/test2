@@ -1,0 +1,9 @@
+# colcon 产物
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# 系统 / 编辑器
+.DS_Store
+*.log
+__pycache__/

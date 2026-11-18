@@ -1,0 +1,24 @@
+{
+  "files.exclude": {
+    "**/build": true,
+    "**/install": true,
+    "**/log": true,
+    "**/__pycache__": true,
+    "**/.DS_Store": true
+  },
+  "search.exclude": {
+    "**/build": true,
+    "**/install": true,
+    "**/log": true
+  },
+  "files.associations": {
+    "*.cfg": "ini",
+    "*.msg": "plaintext",
+    "*.launch.xml": "xml"
+  },
+  "editor.rulers": [100],
+  "editor.tabSize": 2,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "terminal.integrated.scrollback": 10000
+}
