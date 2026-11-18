@@ -25,7 +25,7 @@
 > - **连接模拟器 / 验证连通 / 写代码的日常流程** → [`docs/how_to_connect.md`](docs/how_to_connect.md) ← 先看这个
 > - 从零装 ROS 2 + 虚拟机网络配置 → [`docs/ubuntu_vm_guide.md`](docs/ubuntu_vm_guide.md)
 > - **已装好 ROS 2、已有 `~/aim_lab_ws` 工作空间** → [`docs/aim_lab_ws_quickstart.md`](docs/aim_lab_ws_quickstart.md)
-> - 最小可运行学员示例节点 → [`ros2_ws/src/student_auto_aim`](ros2_ws/src/student_auto_aim)（含重力补偿、到位开火，已放进工作空间，可直接编译）
+
 
 ### 0. VS Code 直接打开
 
@@ -61,9 +61,9 @@ ARM64 注意：依赖只有 Boost.Beast（纯头文件）与 nlohmann-json，无
 ```bash
 source /opt/ros/<distro>/setup.bash
 source <本仓库>/ros2_ws/install/setup.bash      # 提供 rm_aim_sim_bridge 消息
-cd <你的学员工作空间> && colcon build --packages-select student_auto_aim
+cd ros2_ws && colcon build --packages-select training
 source install/setup.bash
-ros2 run student_auto_aim aim_node --ros-args -p use_sim_time:=true
+ros2 run training aim_node --ros-args -p use_sim_time:=true
 ```
 
 网页端左下角“桥接地址”填 `ws://<Ubuntu 的 IP>:9090`（同机则 `ws://localhost:9090`），
@@ -125,12 +125,12 @@ rm_aim_lab_workspace/
 │   ├── sim_core.js                # 仿真核心（simulation.gd 1:1 移植）
 │   └── test_core.mjs              # 核心闭环测试（node test_core.mjs）
 ├── ros2_ws/src/
-│   ├── rm_aim_sim_bridge/
-│   │   ├── msg/                   # 与原版逐字一致
-│   │   ├── include/.../control_gate.hpp  # 与原版逐字一致
-│   │   ├── src/web_bridge_node.cpp       # WebSocket 服务器 + ROS 发布/订阅（原 bridge_node 逻辑移植）
-│   │   └── launch/web_bridge.launch.xml
-│   └── student_auto_aim/          # 最小可运行学员示例节点
+│    └── rm_aim_sim_bridge/
+│        ├── msg/                   # 与原版逐字一致
+│        ├── include/.../control_gate.hpp  # 与原版逐字一致
+│        ├── src/web_bridge_node.cpp       # WebSocket 服务器 + ROS 发布/订阅（原 bridge_node 逻辑移植）
+│        └── launch/web_bridge.launch.xml
+│   
 ├── tools/
 │   ├── check_link.sh              # 一键自检：节点/端口/话题/频率 + 下行指令测试
 │   └── probe_bridge.py            # 探针：打印 session、装甲数、云台角，可选 --sweep
