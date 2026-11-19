@@ -464,6 +464,7 @@ export class Simulation {
       } else if (end - bullet.born >= this.settings.weapon.lifetime || this._outsideTargetRange(bullet, end)) {
         this._finish(bullet, {
           kind: "expired", time: end, point: this.bulletPosition(bullet, end),
+          normal: new V3(0, 0, 1),   // 过期无碰撞面，给默认法线（原版 impact.get("normal", Vector3(0,0,1)) 等效）
           reason: end - bullet.born >= this.settings.weapon.lifetime ? "lifetime" : "range",
         });
         this.projectiles.splice(i, 1);

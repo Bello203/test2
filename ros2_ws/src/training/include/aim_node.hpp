@@ -23,6 +23,14 @@ private:
 
     void timer_callback();
 
+    // 用于计算目标移动速度的历史数据
+    double last_X_ = 0.0;
+    double last_Y_ = 0.0;
+    double last_time_ = 0.0;
+
+    double pitch_min_rad = -0.349;
+    double pitch_max_rad = 0.523;
+
     double target_yaw;
     double target_pitch;
         
